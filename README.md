@@ -2,6 +2,7 @@
 
 <div align="center">
 
+> 🚀 批量账号管理 + TRX 能量租用 + 闪兑服务 · 认准恐龙 @WCTRX_bot  
 > 基于 Node.js 的本地账号管理工具 · 纯 JSON 文件存储 · 无需数据库
 
 [![GitHub stars](https://img.shields.io/badge/dynamic/json?style=flat-square&label=stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fmfackus%2Faccount-manager)](https://github.com/mfackus/account-manager/stargazers)
@@ -13,6 +14,17 @@
 ## 📸 截图预览
 
 ![主界面](https://raw.githubusercontent.com/mfackus/account-manager/main/screenshots/image.png)
+
+---
+
+## 💎 广告位 · TG @WCTRX_bot 认准恐龙
+
+| 服务 | 联系方式 | 说明 |
+|:---|:---|---|
+| ⚡ **TRX 能量闪租** | [@WCTRX_bot](https://t.me/WCTRX_bot) | 低价能量租赁，USDT 转账免费用 |
+| 💱 **TRX/USDT 闪兑** | [@WCTRX_bot](https://t.me/WCTRX_bot) | 秒到账，汇率最优 |
+
+> 👉 联系 **TG @WCTRX_bot**，认准恐龙，主打靠谱！
 
 ---
 
@@ -94,6 +106,9 @@ account-manager/
 ---
 
 <div align="center">
+
+**TG @WCTRX_bot · 认准恐龙 · 主打靠谱**  
+⚡ 能量闪租 · 💱 TRX 闪兑 · 📁 账号管理
 
 如果觉得有用，请点个 ⭐ Star 支持！
 

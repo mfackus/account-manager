@@ -1,1 +1,145 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>本地账号管理系统 v4.0</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script></head><body><div id="app" class="min-h-screen bg-gray-50"><div class="bg-blue-600 text-white p-6"><h1 class="text-2xl font-bold"><i class="fas fa-user-circle"></i> 本地账号管理系统</h1><p class="text-blue-100 mt-2">v4.0 - 请访问服务端 API 获取数据</p></div><div class="max-w-6xl mx-auto p-6"><div class="bg-white rounded-lg shadow p-8 text-center"><h2 class="text-xl font-semibold mb-4">运行服务器后即可使用</h2><p class="text-gray-600">请执行 npm start 启动系统</p></div></div></div></body></html>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>本地账号管理系统 v4.0</title><script>if(window.location.pathname==="/license.html")window.location.pathname="/";</script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"><script src="https://cdn.tailwindcss.com"></script><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f0f2f5;color:#1a1a2e}.status-card{transition:all 0.3s ease;cursor:pointer;border:1px solid #e5e7eb}.status-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08)}.status-card.selected{border:2px solid #3b82f6}.slide-up{animation:slideUp 0.3s ease-out}@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.drop-zone{border:2px dashed #d1d5db;transition:all 0.3s ease}.drop-zone.active{border-color:#3b82f6;background:#eff6ff}.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}.modal-content{background:#fff;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.2);max-width:500px;width:90%;max-height:80vh;overflow-y:auto}.context-menu{position:absolute;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:8px 0;z-index:100;display:none;min-width:180px}.context-menu-item{padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px}.context-menu-item:hover{background:#f3f4f6}</style></head><body><div class="container" style="max-width:1200px;margin:0 auto;padding:16px"><div class="text-center" style="margin-bottom:16px"><h1 style="font-size:1.5rem;font-weight:700;color:#1a1a2e;margin-bottom:8px"><i class="fas fa-server" style="color:#7c3aed"></i> 本地账号管理系统 v4.0</h1><p style="color:#6b7280;font-size:0.9rem">服务器文件存储 · 自动备份 · 海量数据不丢失</p><div style="display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap"><span id="statusInfo" style="background:#2563eb;color:#fff;padding:8px 16px;border-radius:8px;font-size:0.9rem"><i cla<div id="contextMenu" class="context-menu" style="display:none;position:absolute;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:8px 0;z-index:100;min-width:180px"><div class="context-menu-item" data-action="export" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px"><i class="fas fa-download" style="color:#3b82f6;width:16px"></i>导出此状态</div><div class="context-menu-item" data-action="transfer" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px"><i class="fas fa-exchange-alt" style="color:#10b981;width:16px"></i>转移账号</div><div class="context-menu-item" data-action="view" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px"><i class="fas fa-eye" style="color:#8b5cf6;width:16px"></i>查看详情</div><div class="context-menu-item" data-action="clear" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:8px"><i class="fas fa-trash" style="color:#ef4444;width:16px"></i>清理此分类</div></div><div id="transferModal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center"><div class="modal-content" style="background:#fff;border-radius:12px;padding:24px;max-width:500px;width:90%"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><h3 style="font-size:1.25rem;font-weight:700">转移账号</h3><button class="closeTransfer" style="border:none;background:none;cursor:pointer;color:#6b7280;font-size:1.25rem">✖</button></div><p style="color:#4b5563;margin-bottom:8px">从 <span id="sourceStatusName" style="font-weight:600"></span> 转移到：</p><select id="transferTarget" style="width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:16px"></select><div style="display:flex;justify-content:flex-end;gap:12px"><button class="closeTransfer" style="padding:8px 16px;background:#d1d5db;border:none;border-radius:8px;cursor:pointer">取消</button><button id="confirmTransfer" style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer">确认转移</button></div></div></div><div id="detailModal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center"><div class="modal-content" style="background:#fff;border-radius:12px;padding:24px;max-width:90%;width:90%"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><h3 style="font-size:1.25rem;font-weight:700" id="detailTitle">账号详情</h3><button class="closeDetail" style="border:none;background:none;cursor:pointer;color:#6b7280;font-size:1.25rem">✖</button></div><div style="max-height:400px;overflow-y:auto"><table style="width:100%;font-size:0.875rem;border-collapse:collapse"><thead style="background:#f9fafb;font-size:0.75rem;text-transform:uppercase"><tr><th style="padding:12px 8px;text-align:left">账号</th><th style="padding:12px 8px;text-align:left">密码</th><th style="padding:12px 8px;text-align:left">密保</th><th style="padding:12px 8px;text-align:left">其他1</th><th style="padding:12px 8px;text-align:left">其他2</th><th style="padding:12px 8px;text-align:left">其他3</th><th style="padding:12px 8px;text-align:left">时间</th></tr></thead><tbody id="detailBody"></tbody></table></div><div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="closeDetail" style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer">关闭</button></div></div></div><div id="dupModal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center"><div class="modal-content" style="background:#fff;border-radius:12px;padding:24px;max-width:700px;width:90%"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><h3 style="font-size:1.25rem;font-weight:700">重复查询</h3><button class="closeDup" style="border:none;background:none;cursor:pointer;color:#6b7280;font-size:1.25rem">✖</button></div><p style="color:#4b5563;margin-bottom:8px">输入要查询的账号（每行一个，最多50个）：</p><textarea id="dupInput" rows="8" style="width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:8px" placeholder="每行一个账号"></textarea><p style="font-size:0.875rem;color:#6b7280;margin-bottom:12px">已输入 <span id="dupCount">0</span>/50 个</p><button id="searchDup" style="background:#2563eb;color:#fff;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;width:100%;margin-bottom:12px"><i class="fas fa-search"></i> 查询</button><div id="dupResults" style="max-height:400px;overflow-y:auto;display:none"></div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="closeDup" style="padding:8px 16px;background:#d1d5db;border:none;border-radius:8px;cursor:pointer">关闭</button></div></div></div><div id="renameModal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center"><div class="modal-content" style="background:#fff;border-radius:12px;padding:24px;max-width:600px;width:90%"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><h3 style="font-size:1.25rem;font-weight:700">修改状态名称</h3><button class="closeRename" style="border:none;background:none;cursor:pointer;color:#6b7280;font-size:1.25rem">✖</button></div><p style="color:#6b7280;font-size:0.875rem;margin-bottom:16px">修改后点击保存，名称会保存在服务器中</p><div id="renameList" style="max-height:360px;overflow-y:auto"><table style="width:100%"><thead><tr><th style="text-align:left;font-size:0.875rem;font-weight:600;padding-bottom:8px;width:50px">状态</th><th style="text-align:left;font-size:0.875rem;font-weight:600;padding-bottom:8px">名称</th></tr></thead><tbody id="renameBody"></tbody></table></div><div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px"><button id="renameReset" style="padding:8px 16px;background:#d1d5db;border:none;border-radius:8px;cursor:pointer">恢复默认</button><button class="closeRename" style="padding:8px 16px;background:#d1d5db;border:none;border-radius:8px;cursor:pointer">取消</button><button id="renameSave" style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer">保存</button></div></div></div><script>var API="/api",LS_KEY="accData_v4";var defaultStatusNames=["导入成功","密正","锁定","异常","待查询","已下发","密保","其他","其他2","其他3","其他4","其他5"];var statusNames=defaultStatusNames.slice();(function(){try{var x=new XMLHttpRequest();x.open("GET","/api/status-names",false);x.send();if(x.status===200){var j=JSON.parse(x.responseText);if(j.success&&j.names&&j.names.length===12)statusNames=j.names;}}catch(e){}}());if(statusNames===defaultStatusNames){try{var s=JSON.parse(localStorage.getItem("accNames_v4"));if(s&&s.length===12)statusNames=s;}catch(e){}}var statusColors=["bg-green-500","bg-blue-500","bg-red-500","bg-orange-500","bg-yellow-500","bg-purple-500","bg-pink-500","bg-gray-500","bg-indigo-500","bg-teal-500","bg-cyan-500","bg-lime-500"];var statusList=[];for(var si=0;si<12;si++)statusList.push({id:si+1,name:statusNames[si],color:statusColors[si]});var data={},cache=new Map(),ctxStatus=null,lastDupAccounts=[];function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}function loadFromServer(cb){showMsg("正在从服务器加载数据...","info");var xhr=new XMLHttpRequest();xhr.open("GET",API+"/accounts",true);xhr.onload=function(){if(xhr.status===200){var j=JSON.parse(xhr.responseText);if(j.success&&j.data){data=j.data;rebuildCache();updateUI();showMsg("成功加载 "+totalCount().toLocaleString()+" 个账号","success");if(cb)cb(true);return;}}if(cb)cb(false);};xhr.onerror=function(){if(cb)cb(false);};xhr.send();}function saveToServer(cb){var xhr=new XMLHttpRequest();xhr.open("POST",API+"/accounts",true);xhr.setRequestHeader("Content-Type","application/json");xhr.onload=function(){if(xhr.status===200){if(cb)cb(null);else updateUI();}else{if(cb)cb("服务器返回:"+xhr.status);}};xhr.onerror=function(){if(cb)cb("网络错误");};xhr.send(JSON.stringify({accountData:data}));}function saveLocalToCache(){try{localStorage.setItem(LS_KEY,JSON.stringify(data));}catch(e){}}function loadFromCache(){try{var s=localStorage.getItem(LS_KEY);if(s){data=JSON.parse(s);return true;}}catch(e){}return false;}function rebuildCache(){cache.clear();for(var sid in data){if(Array.isArray(data[sid]))for(var i=0;i<data[sid].length;i++){var a=data[sid][i],f=a.fields||[];while(f.length<6)f.push("");cache.set(f[0],{createTime:a.createTime||Date.now(),status:parseInt(sid)});}}}function totalCount(){var c=0;for(var sid in data){if(Array.isArray(data[sid]))c+=data[sid].length;}return c;}function updateUI(){for(var i=0;i<statusList.length;i++){var s=statusList[i];s.count=(data[s.id]||[]).length;var el=document.getElementById("c"+s.id);if(el)el.textContent=s.count;}var t=totalCount();document.getElementById("statusInfo").innerHTML='<i class="fas fa-database"></i> '+(t?"已存储 "+t.toLocaleString()+" 个账号":"暂无账号数据");}function showMsg(msg,t){var c=t==="success"?"emerald":t==="error"?"red":"blue",i=t==="success"?"check-circle":t==="error"?"exclamation-circle":"info-circle";document.getElementById("resultArea").innerHTML='<div class="slide-up" style="animation:slideUp 0.3s ease-out"><div style="padding:12px;border-radius:8px;display:flex;align-items:center;gap:8px;background:#'+(t==="success"?"ecfdf5;color:#065f46":t==="error"?"fef2f2;color:#991b1b":"eff6ff;color:#1e40af")+'"><i class="fas fa-'+i+'"></i><span style="font-weight:500">'+msg+'</span></div></div>';}function downFile(c,n){var b=new Blob([c],{type:"text/plain;charset=utf-8"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=n;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);}function renderCards(){var cards=document.getElementById("statusCards");cards.innerHTML="";for(var i=0;i<statusList.length;i++){var s=statusList[i];var card=document.createElement("div");card.className="status-card";card.style.cssText="background:#fff;border-radius:8px;padding:12px;display:flex;flex-direction:column;align-items:center;cursor:pointer;border:1px solid #e5e7eb;transition:all 0.3s ease";card.dataset.sid=s.id;card.innerHTML='<div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:'+["#10b981","#3b82f6","#ef4444","#f97316","#eab308","#8b5cf6","#ec4899","#6b7280","#6366f1","#14b8a6","#06b6d4","#84cc16"][i]+'"><i class="fas fa-user" style="color:#fff;font-size:0.875rem"></i></div><div style="font-size:0.9rem;font-weight:600;text-align:center">'+s.name+'</div><div style="font-size:1.25rem;font-weight:700;margin-top:4px" id="c'+s.id+'">'+(s.count||0)+'</div>';card.onclick=function(){var cards=document.querySelectorAll(".status-card");for(var j=0;j<cards.length;j++)cards[j].classList.remove("selected");this.classList.add("selected");};cards.appendChild(card);}}function parseLine(line){var f=[];if(line.indexOf("----")>=0)f=line.split("----");else if(line.indexOf("&")>=0)f=line.split("&");else if(line.indexOf("\t")>=0)f=line.split("\t");else f=line.split(/\s+/);f=f.map(function(x){return x.trim();});if(!f[0])return null;while(f.length<6)f.push("");return{fields:f,createTime:Date.now()};}document.addEventListener("DOMContentLoaded",function(){renderCards();loadFromServer(function(ok){if(!ok){if(loadFromCache()){rebuildCache();updateUI();showMsg("从缓存加载 "+totalCount().toLocaleString()+" 个账号","success");}else{updateUI();showMsg("欢迎使用，请导入TXT文件或上传备份","info");}}});setupEvents();});function setupEvents(){document.getElementById("fileInput").addEventListener("change",handleFile);document.getElementById("backupInput").addEventListener("change",handleBackup);document.getElementById("backupUploadBtn").onclick=function(){document.getElementById("backupInput").click();};document.getElementById("renameBtn").onclick=showRenameModal;document.getElementById("dupSearchBtn").onclick=showDupModal;document.getElementById("clearBtn").onclick=clearAll;document.getElementById("exportBtn").onclick=exportAll;document.getElementById("backupBtn").onclick=createBackup;var dz=document.getElementById("dropZone");var fi=document.getElementById("fileInput");dz.onclick=function(){fi.click();};dz.ondragover=function(e){e.preventDefault();dz.className=dz.className+" active";};dz.ondragleave=function(){dz.classList.remove("active");};dz.ondrop=function(e){e.preventDefault();dz.classList.remove("active");if(e.dataTransfer.files.length){fi.files=e.dataTransfer.files;handleFile();}};setupContextMenu();setupModals();initSelects();}
+function handleFile(){
+var fi=document.getElementById("fileInput");if(!fi.files.length)return;
+
+var file=fi.files[0];
+
+document.getElementById("fileInfo").textContent="已选择: "+file.name+" ("+(file.size/1024/1024).toFixed(1)+" MB)";
+
+if(!file.name.toLowerCase().endsWith(".txt")){showMsg("请选择TXT文件","error");return;}
+
+showMsg("正在读取文件...","info");
+
+var reader=new FileReader();
+
+reader.onload=function(e){
+
+var text=e.target.result;var lines=text.split("\n");
+
+var news=[],dups=0,valid=0;lastDupAccounts=[];
+
+function proc(start){var end=Math.min(start+5000,lines.length);for(var i=start;i<end;i++){var l=lines[i].trim();if(!l)continue;var a=parseLine(l);if(a){valid++;if(!cache.has(a.fields[0])){news.push(a);cache.set(a.fields[0],{createTime:a.createTime,status:1});}else{dups++;lastDupAccounts.push(l);}}}if(end<lines.length)setTimeout(function(){proc(end);},5);else finish();}
+
+function finish(){if(news.length>0){if(!data[1])data[1]=[];for(var i=0;i<news.length;i++)data[1].push(news[i]);saveLocalToCache();saveToServer(function(err){if(err)showMsg("保存到服务器失败: "+err,"error");else{updateUI();showMsg("成功导入 "+news.length.toLocaleString()+" 个新账号！","success");}});}else showMsg(valid>0?"所有账号都是重复的":"没有有效数据",valid>0?"info":"error");}
+
+proc(0);
+
+};
+
+reader.readAsText(file);
+
+}
+
+
+
+function handleBackup(){
+
+var bi=document.getElementById("backupInput");if(!bi.files.length)return;
+
+var file=bi.files[0];if(!file.name.toLowerCase().endsWith(".json")){showMsg("请选择JSON备份文件","error");return;}
+
+showMsg("正在解析备份文件...","info");
+
+var reader=new FileReader();
+
+reader.onload=function(e){try{var backup=JSON.parse(e.target.result);if(!backup.accountData){showMsg("备份文件格式不正确","error");return;}data=backup.accountData;rebuildCache();saveLocalToCache();saveToServer(function(err){if(err)showMsg("保存到服务器失败: "+err,"error");else{updateUI();showMsg("备份恢复成功！共 "+totalCount().toLocaleString()+" 个账号","success");}});}catch(err){showMsg("备份文件解析失败: "+err.message,"error");}};
+
+reader.readAsText(file);
+
+}
+
+
+
+function createBackup(){if(totalCount()===0){showMsg("没有数据可备份","error");return;}showMsg("正在同步到服务器，备份已自动保存","success");}
+
+
+
+function exportAll(){if(totalCount()===0){showMsg("没有数据可导出","error");return;}var lines=[];for(var sid in data){if(Array.isArray(data[sid])){for(var i=0;i<data[sid].length;i++){var a=data[sid][i],f=a.fields||[];while(f.length<6)f.push("");lines.push(f[0]+"----"+f[1]+"----"+f[2]+"----"+f[3]+"----"+f[4]+"----"+f[5]);}}}downFile(lines.join("\n"),"全部账号_"+totalCount().toLocaleString()+"个.txt");showMsg("已导出 "+totalCount().toLocaleString()+" 个账号","success");}
+
+
+
+function clearAll(){if(totalCount()===0){showMsg("没有数据可清空","error");return;}if(!confirm("确定要清空所有 "+totalCount().toLocaleString()+" 条数据？"))return;data={};cache.clear();saveToServer(function(err){if(err)showMsg("清空失败: "+err,"error");else{updateUI();showMsg("所有数据已清空","info");}});}
+
+
+
+function setupContextMenu(){
+
+var m=document.getElementById("contextMenu");
+
+document.getElementById("statusCards").addEventListener("contextmenu",function(e){e.preventDefault();var card=e.target.closest(".status-card");if(card){ctxStatus=parseInt(card.dataset.sid);m.style.display="block";m.style.left=e.pageX+"px";m.style.top=e.pageY+"px";}});
+
+document.addEventListener("click",function(e){if(!m.contains(e.target))m.style.display="none";});
+
+m.addEventListener("click",function(e){var item=e.target.closest(".context-menu-item");if(!item)return;var a=item.dataset.action;m.style.display="none";if(a==="export")expStatus(ctxStatus);else if(a==="transfer"){document.getElementById("sourceStatusName").textContent=statusList.find(function(x){return x.id===ctxStatus;}).name;document.getElementById("transferModal").style.display="flex";}else if(a==="view")showDetail(ctxStatus);else if(a==="clear")clearStatus(ctxStatus);});
+
+}
+
+
+
+function clearStatus(sid){if(!data[sid]||!data[sid].length)return;var n=data[sid].length;if(!confirm("确定清理 "+statusList.find(function(x){return x.id===sid;}).name+" 的 "+n+" 个账号？"))return;delete data[sid];cache.clear();rebuildCache();saveToServer(function(err){if(err)showMsg("清理失败: "+err,"error");else{updateUI();showMsg("已清理 "+n+" 个账号","success");}});}
+
+
+
+function expStatus(sid){var arr=data[sid];if(!arr||!arr.length){showMsg("此状态没有数据","info");return;}var lines=[];for(var i=0;i<arr.length;i++){var f=arr[i].fields||[];while(f.length<6)f.push("");lines.push(f[0]+"----"+f[1]+"----"+f[2]+"----"+f[3]+"----"+f[4]+"----"+f[5]);}var sn=statusList.find(function(x){return x.id===sid;}).name;downFile(lines.join("\n"),sn+"_"+arr.length.toLocaleString()+"个.txt");showMsg("已导出 "+sn+" 的 "+arr.length.toLocaleString()+" 个账号","success");}
+
+
+
+function initSelects(){var sel=document.getElementById("transferTarget");sel.innerHTML="";for(var i=0;i<statusList.length;i++){var opt=document.createElement("option");opt.value=statusList[i].id;opt.textContent=statusList[i].name;sel.appendChild(opt);}}
+
+
+
+function setupModals(){
+
+["transfer","detail","dup","rename"].forEach(function(mid){
+
+var btns=document.querySelectorAll(".close"+mid.charAt(0).toUpperCase()+mid.slice(1));
+
+btns.forEach(function(el){el.addEventListener("click",function(){document.getElementById(mid+"Modal").style.display="none";});});
+
+});
+
+window.addEventListener("click",function(e){["transfer","detail","dup","rename"].forEach(function(mid){var modal=document.getElementById(mid+"Modal");if(e.target===modal)modal.style.display="none";});});
+
+document.getElementById("confirmTransfer").addEventListener("click",function(){var from=ctxStatus,to=parseInt(document.getElementById("transferTarget").value);if(from===to){showMsg("源和目标相同","error");return;}if(!data[from]||!data[from].length){showMsg("源状态没有数据","error");return;}if(!data[to])data[to]=[];for(var i=data[from].length-1;i>=0;i--)data[to].push(data[from][i]);delete data[from];cache.clear();rebuildCache();document.getElementById("transferModal").style.display="none";saveToServer(function(err){if(err)showMsg("转移失败: "+err,"error");else{updateUI();showMsg("转移成功！","success");}});});
+
+}
+
+
+
+document.getElementById("renameSave").addEventListener("click",function(){var arr=[];for(var i=0;i<12;i++){var inp=document.getElementById("rname_"+i);arr.push(inp?inp.value.trim()||statusNames[i]:statusNames[i]);}try{localStorage.setItem("accNames_v4",JSON.stringify(arr));}catch(e){}for(var i=0;i<12;i++){statusNames[i]=arr[i];statusList[i].name=arr[i];}try{var x=new XMLHttpRequest();x.open("POST","/api/status-names",true);x.setRequestHeader("Content-Type","application/json");x.send(JSON.stringify({names:arr}));}catch(e){}document.getElementById("renameModal").style.display="none";renderCards();updateUI();showMsg("状态名称已更新！","success");});
+
+
+
+function showRenameModal(){
+
+var tbody=document.getElementById("renameBody");tbody.innerHTML="";
+
+try{var ns=JSON.parse(localStorage.getItem("accNames_v4"))||statusNames;}catch(e){var ns=statusNames;}
+
+for(var i=0;i<12;i++){tbody.innerHTML+="<tr><td style=\"padding:8px 0\"><span style=\"display:inline-block;width:12px;height:12px;border-radius:50%;background:"+["#10b981","#3b82f6","#ef4444","#f97316","#eab308","#8b5cf6","#ec4899","#6b7280","#6366f1","#14b8a6","#06b6d4","#84cc16"][i]+';margin-right:4px"></span>'+(i+1)+'</td><td style="padding:8px 0"><input id="rname_'+i+'" style="width:100%;padding:4px 8px;border:1px solid #d1d5db;border-radius:4px;font-size:0.875rem" value="'+esc(ns[i]||statusNames[i])+'"></td></tr>';}
+
+document.getElementById("renameModal").style.display="flex";
+
+}
+
+document.getElementById("renameReset").addEventListener("click",function(){for(var i=0;i<12;i++){var inp=document.getElementById("rname_"+i);if(inp)inp.value=statusNames[i];}});
+
+
+
+function showDupModal(){document.getElementById("dupModal").style.display="flex";updateDupCount();document.getElementById("dupResults").innerHTML="";document.getElementById("dupResults").style.display="none";}
+
+function updateDupCount(){var txt=document.getElementById("dupInput").value;document.getElementById("dupCount").textContent=Math.min(txt.split("\n").filter(function(l){return l.trim();}).length,50);}
+
+document.getElementById("dupInput").addEventListener("input",updateDupCount);
+
+document.getElementById("searchDup").addEventListener("click",function(){var q=document.getElementById("dupInput").value.trim().split("\n").filter(function(l){return l.trim();}).slice(0,50);if(!q.length){showMsg("请输入账号","error");return;}var results={};for(var i=0;i<q.length;i++){var acc=q[i].trim();if(cache.has(acc)){var info=cache.get(acc);var sid=info.status;var sn="";for(var j=0;j<statusList.length;j++){if(statusList[j].id===sid){sn=statusList[j].name;break;}}results[acc]=sn;}else results[acc]="未找到";}var h="<table style=\"width:100%;font-size:0.875rem\"><thead><tr><th style=\"text-align:left;padding:4px 8px\">账号</th><th style=\"text-align:left;padding:4px 8px\">当前状态</th></tr></thead><tbody>";for(var i=0;i<q.length;i++){var acc=q[i].trim();h+="<tr style=\"border-bottom:1px solid #e5e7eb;background:"+(results[acc]==="未找到"?"#fef2f2":"#ecfdf5")+'\"><td style="padding:4px 8px;font-size:0.8rem">'+esc(acc)+'</td><td style="padding:4px 8px;font-size:0.8rem">'+esc(results[acc])+'</td></tr>';}h+="</tbody></table>";var dr=document.getElementById("dupResults");dr.innerHTML=h;dr.style.display="block";});
+
+
+
+function showDetail(sid){var arr=data[sid];if(!arr||!arr.length){showMsg("此状态没有数据","info");return;}var sn="";for(var i=0;i<statusList.length;i++){if(statusList[i].id===sid){sn=statusList[i].name;break;}}document.getElementById("detailTitle").textContent=sn+" - 共 "+arr.length.toLocaleString()+" 条";var tbody=document.getElementById("detailBody");tbody.innerHTML="";var start=0,pageSize=200;function renderPage(){for(var i=start;i<Math.min(start+pageSize,arr.length);i++){var a=arr[i],f=a.fields||[];while(f.length<6)f.push("");var tr=document.createElement("tr");tr.style.cssText="border-bottom:1px solid #e5e7eb";tr.innerHTML="<td style=\"padding:8px;font-size:0.8rem\">"+esc(f[0])+'</td><td style="padding:8px;font-size:0.8rem">'+esc(f[1])+'</td><td style="padding:8px;font-size:0.8rem">'+esc(f[2])+'</td><td style="padding:8px;font-size:0.8rem">'+esc(f[3])+'</td><td style="padding:8px;font-size:0.8rem">'+esc(f[4])+'</td><td style="padding:8px;font-size:0.8rem">'+esc(f[5])+'</td><td style="padding:8px;font-size:0.8rem;color:#9ca3af">'+(a.createTime?new Date(a.createTime).toLocaleString():"")+"</td>";tbody.appendChild(tr);}start+=pageSize;if(start<arr.length){var more=document.createElement("tr");more.innerHTML='<td colspan="7" style="text-align:center;padding:8px"><button onclick="showDetail('+sid+')" style="background:#2563eb;color:#fff;padding:8px 16px;border:none;border-radius:8px;cursor:pointer">加载更多</button></td>';tbody.appendChild(more);}}renderPage();document.getElementById("detailModal").style.display="flex";}
+
+
+
+</script>
+</body>
+</html>
